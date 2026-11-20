@@ -108,9 +108,9 @@ IAM bersifat **global** (tidak terikat region) dan **tidak menambah biaya bulana
 | Resource | ARN / Konfigurasi | Alasan |
 |---|---|---|
 | **GitHub OIDC Identity Provider** | `token.actions.githubusercontent.com` (audience `sts.amazonaws.com`) | Federasi identitas GitHub Actions ke AWS — tidak ada AWS Access Key/Secret Key disimpan sebagai GitHub secret. |
-| **`watertrack-github-actions-role`** | `arn:aws:iam::775755739096:role/watertrack-github-actions-role` | Diasumsikan GitHub Actions via `AssumeRoleWithWebIdentity` (trust policy dibatasi ke `repo:<org>/WaterTrack:ref:refs/heads/main`). Permission (`WaterTrackGitHubActionsPolicy`): push image ke ECR, `RegisterTaskDefinition`/`UpdateService`/`RunTask` ECS, sync build ke `watertrack-frontend-prod`, `cloudfront:CreateInvalidation`, dan `iam:PassRole` ke kedua role ECS di bawah. |
-| **`watertrack-ecs-execution-role`** | `arn:aws:iam::775755739096:role/watertrack-ecs-execution-role` | Dipakai ECS **sebelum** container start: pull image dari ECR (`AmazonECSTaskExecutionRolePolicy`) + ambil 4 secret dari Secrets Manager via inline policy `WaterTrackSecretsAccess`. |
-| **`watertrack-ecs-task-role`** | `arn:aws:iam::775755739096:role/watertrack-ecs-task-role` | Dipakai kode Laravel **saat runtime** via metadata endpoint `169.254.170.2` — akses `s3:GetObject/PutObject/DeleteObject/ListBucket` ke `watertrack-uploads-prod` (inline policy `WaterTrackECSTaskPolicy`). Tidak ada AWS credential hardcode di `.env`. |
+| **`watertrack-github-actions-role`** | `arn:aws:iam::123456789012:role/watertrack-github-actions-role` | Diasumsikan GitHub Actions via `AssumeRoleWithWebIdentity` (trust policy dibatasi ke `repo:<org>/WaterTrack:ref:refs/heads/main`). Permission (`WaterTrackGitHubActionsPolicy`): push image ke ECR, `RegisterTaskDefinition`/`UpdateService`/`RunTask` ECS, sync build ke `watertrack-frontend-prod`, `cloudfront:CreateInvalidation`, dan `iam:PassRole` ke kedua role ECS di bawah. |
+| **`watertrack-ecs-execution-role`** | `arn:aws:iam::123456789012:role/watertrack-ecs-execution-role` | Dipakai ECS **sebelum** container start: pull image dari ECR (`AmazonECSTaskExecutionRolePolicy`) + ambil 4 secret dari Secrets Manager via inline policy `WaterTrackSecretsAccess`. |
+| **`watertrack-ecs-task-role`** | `arn:aws:iam::123456789012:role/watertrack-ecs-task-role` | Dipakai kode Laravel **saat runtime** via metadata endpoint `169.254.170.2` — akses `s3:GetObject/PutObject/DeleteObject/ListBucket` ke `watertrack-uploads-prod` (inline policy `WaterTrackECSTaskPolicy`). Tidak ada AWS credential hardcode di `.env`. |
 
 > IAM user setup (`dev2-network`, `dev3-database`, `dev4-frontend`, `dev5-platform`) bersifat sementara untuk proses deployment awal — lihat [Bagian 13 Cleanup](../deploy-guide-console.md#13-checklist-pasca-deploy) untuk review/pencabutan akses pasca-setup.
 
@@ -230,4 +230,3 @@ Skenario: tanggal 25, ratusan pelanggan akses sekaligus untuk cek tagihan dan ba
 
 - `docs/aws-architecture/watertrack-aws-architecture.drawio` — diagram arsitektur (buka dengan draw.io desktop)
 - `docs/deploy-guide-console.md` — panduan deployment step-by-step (IAM, VPC, RDS, ECS, CI/CD) yang menjadi sumber kebenaran arsitektur ini
-- `docs/superpowers/specs/2026-06-04-watertrack-redesign-design.md` — desain frontend/backend sebelumnya

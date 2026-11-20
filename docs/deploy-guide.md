@@ -465,7 +465,7 @@ aws secretsmanager create-secret \
   }'
 
 # Catat ARN yang muncul di output
-# arn:aws:secretsmanager:ap-southeast-3:ACCOUNT_ID:secret:watertrack/production-XXXXXX
+# arn:aws:secretsmanager:ap-southeast-3:ACCOUNT_ID:secret:watertrack/production-xxxxxx
 ```
 
 ---

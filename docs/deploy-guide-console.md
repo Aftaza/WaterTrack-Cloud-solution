@@ -58,41 +58,41 @@ Region: ap-southeast-3
 
 --- [DEV 1] IAM ---
 AWS Account ID:              ____________________________
-ARN ECS Execution Role:      arn:aws:iam::775755739096:role/watertrack-ecs-execution-role
-ARN ECS Task Role:           arn:aws:iam::775755739096:role/watertrack-ecs-task-role
-ARN GitHub Actions Role:     arn:aws:iam::775755739096:role/watertrack-github-actions-role
+ARN ECS Execution Role:      arn:aws:iam::123456789012:role/watertrack-ecs-execution-role
+ARN ECS Task Role:           arn:aws:iam::123456789012:role/watertrack-ecs-task-role
+ARN GitHub Actions Role:     arn:aws:iam::123456789012:role/watertrack-github-actions-role
 IAM User Dev 2 (temp):       ____________________________
 IAM User Dev 3 (temp):       ____________________________
 IAM User Dev 4 (temp):       ____________________________
 IAM User Dev 5 (temp):       ____________________________
 
 --- [DEV 2] VPC & NETWORK ---
-VPC ID:                      vpc-06717718b29f964c3
-Public Subnet AZ-a ID:       subnet-0e6e9a0dc3899d07c (10.0.16.0/20)
-Public Subnet AZ-b ID:       subnet-0b3fafa6d3535e223 (10.0.2.0/24)
-Private Subnet AZ-a ID:      subnet-07ea5795e74af67c8 (10.0.128.0/20)
-Private Subnet AZ-b ID:      subnet-004e9a679b0d2deb5 (10.0.144.0/20)
-SG ALB ID:                   sg-0717a87255858c55e     (alb-sg)
-SG ECS ID:                   sg-0b1fea5f39a256919     (ecs-sg)
-SG RDS ID:                   sg-07a0dce9ebea074a0     (rds-sg)
-SG Redis ID:                 sg-0df045422dc4ad20d     (redis-sg)
-ACM Certificate ARN (ap-southeast-3):  arn:aws:acm:ap-southeast-3:775755739096:certificate/7c115b03-02e3-4388-960a-98baa73c2dc6
-ACM Certificate ARN (us-east-1):       arn:aws:acm:us-east-1:775755739096:certificate/f6c80578-ebe8-408e-bd13-b8634f24fda6
+VPC ID:                      vpc-xxxxxxxxxxxxxxxxx
+Public Subnet AZ-a ID:       subnet-xxxxxxxxxxxxxxxxx (10.0.16.0/20)
+Public Subnet AZ-b ID:       subnet-xxxxxxxxxxxxxxxxx (10.0.2.0/24)
+Private Subnet AZ-a ID:      subnet-xxxxxxxxxxxxxxxxx (10.0.128.0/20)
+Private Subnet AZ-b ID:      subnet-xxxxxxxxxxxxxxxxx (10.0.144.0/20)
+SG ALB ID:                   sg-xxxxxxxxxxxxxxxxx     (alb-sg)
+SG ECS ID:                   sg-xxxxxxxxxxxxxxxxx     (ecs-sg)
+SG RDS ID:                   sg-xxxxxxxxxxxxxxxxx     (rds-sg)
+SG Redis ID:                 sg-xxxxxxxxxxxxxxxxx     (redis-sg)
+ACM Certificate ARN (ap-southeast-3):  arn:aws:acm:ap-southeast-3:123456789012:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ACM Certificate ARN (us-east-1):       arn:aws:acm:us-east-1:123456789012:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 
 --- [DEV 3] DATABASE & SECRETS ---
-RDS Endpoint:                watertrack-db-prod.c94gy0yacjro.ap-southeast-3.rds.amazonaws.com
-ElastiCache Endpoint:        clustercfg.watertrack-redis-prod.hxtqnn.apse3.cache.amazonaws.com:6379
-Secret ARN APP_KEY:          arn:aws:secretsmanager:ap-southeast-3:775755739096:secret:watertrack/app-key-mxSzGu
-Secret ARN DB_PASSWORD:      arn:aws:secretsmanager:ap-southeast-3:775755739096:secret:watertrack/db-password-q8hwYQ
-Secret ARN DB_HOST:          arn:aws:secretsmanager:ap-southeast-3:775755739096:secret:watertrack/db-host-4Fvid5
-Secret ARN REDIS_HOST:       arn:aws:secretsmanager:ap-southeast-3:775755739096:secret:watertrack/redis-host-SGM4I3
+RDS Endpoint:                watertrack-db-prod.xxxxxxxxxxxx.ap-southeast-3.rds.amazonaws.com
+ElastiCache Endpoint:        clustercfg.watertrack-redis-prod.xxxxxx.apse3.cache.amazonaws.com:6379
+Secret ARN APP_KEY:          arn:aws:secretsmanager:ap-southeast-3:123456789012:secret:watertrack/app-key-xxxxxx
+Secret ARN DB_PASSWORD:      arn:aws:secretsmanager:ap-southeast-3:123456789012:secret:watertrack/db-password-xxxxxx
+Secret ARN DB_HOST:          arn:aws:secretsmanager:ap-southeast-3:123456789012:secret:watertrack/db-host-xxxxxx
+Secret ARN REDIS_HOST:       arn:aws:secretsmanager:ap-southeast-3:123456789012:secret:watertrack/redis-host-xxxxxx
 
 --- [DEV 4] FRONTEND & CDN ---
 S3 Bucket Frontend:          watertrack-frontend-prod
 S3 Bucket Uploads:           watertrack-uploads-prod
-CloudFront Distribution ID:  E1CZ9SHMZRJEXV
-CloudFront Domain:           d2i4hufhzwjtvn.cloudfront.net
-WAF Web ACL ARN:             arn:aws:wafv2:us-east-1:775755739096:global/webacl/watertrack-waf/63bb25a4-36f6-41c5-9a95-9418d9822858
+CloudFront Distribution ID:  EXXXXXXXXXXXXX
+CloudFront Domain:           dxxxxxxxxxxxxx.cloudfront.net
+WAF Web ACL ARN:             arn:aws:wafv2:us-east-1:123456789012:global/webacl/watertrack-waf/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 
 --- [DEV 5] PLATFORM ---
 ECR Repository URI:          ACCOUNT.dkr.ecr.ap-southeast-3.amazonaws.com/watertrack-api
@@ -100,7 +100,7 @@ ECS Cluster ARN:             arn:aws:ecs:ap-southeast-3:ACCOUNT:cluster/watertra
 ECS Service ARN:             arn:aws:ecs:ap-southeast-3:ACCOUNT:service/watertrack-cluster/watertrack-api-service
 ALB DNS Name:                watertrack-alb-____.ap-southeast-3.elb.amazonaws.com
 ALB ARN:                     arn:aws:elasticloadbalancing:ap-southeast-3:ACCOUNT:loadbalancer/app/watertrack-alb/____
-Target Group ARN:            arn:aws:elasticloadbalancing:ap-southeast-3:775755739096:targetgroup/watertrack-tg/c8a2989c862f2eae
+Target Group ARN:            arn:aws:elasticloadbalancing:ap-southeast-3:123456789012:targetgroup/watertrack-tg/xxxxxxxxxxxxxxxx
 Route 53 Hosted Zone ID:     Z____________________
 ```
 
@@ -794,7 +794,7 @@ Scroll ke bawah. Isi field-field berikut:
 | **Price class** | **Use all edge locations (best performance)** | Mencakup semua POP CloudFront termasuk Asia Tenggara. Latensi terbaik untuk pengguna Indonesia. |
 | **AWS WAF web ACL** | (kosong / None) | Biarkan kosong — WAF diasosiasikan di langkah 8.4 setelah Web ACL dibuat. |
 | **Alternate domain names (CNAME)** | Klik **"Add item"** → isi `aftaza.dev` | Domain publik. Tambah baris kedua `www.aftaza.dev` jika diperlukan. Wajib diisi jika ingin pakai domain sendiri. |
-| **Custom SSL certificate** | Pilih sertifikat **us-east-1** dari langkah 6.5 | ARN: `arn:aws:acm:us-east-1:775755739096:certificate/f6c80578-ebe8-408e-bd13-b8634f24fda6`. Wajib dari **us-east-1** — CloudFront hanya membaca ACM dari region ini. |
+| **Custom SSL certificate** | Pilih sertifikat **us-east-1** dari langkah 6.5 | ARN: `arn:aws:acm:us-east-1:123456789012:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`. Wajib dari **us-east-1** — CloudFront hanya membaca ACM dari region ini. |
 | **Security policy** | **TLSv1.2_2021 (recommended)** | Minimum TLS 1.2. Menonaktifkan TLS 1.0/1.1 yang sudah deprecated. |
 | **Supported HTTP versions** | ☑ **HTTP/2** dan ☑ **HTTP/3** | Aktifkan keduanya. HTTP/3 (QUIC) memberikan koneksi lebih cepat di jaringan mobile. |
 | **Default root object** | `index.html` | **Wajib diisi.** Tanpa ini, request ke `https://aftaza.dev` mengembalikan 403 dari S3 alih-alih halaman React. |
@@ -804,7 +804,7 @@ Scroll ke bawah. Isi field-field berikut:
 
 Klik **"Create distribution"**. Status berubah dari `In Progress` → `Enabled` dalam **5–10 menit**.
 
-Catat **Distribution ID** (`E1C3FJ11UUAQM4`) dan **Domain name** (`d56pe38f7mqzq.cloudfront.net`) di Shared Info Sheet.
+Catat **Distribution ID** (`EXXXXXXXXXXXXX`) dan **Domain name** (`dxxxxxxxxxxxxx.cloudfront.net`) di Shared Info Sheet.
 
 > **Verifikasi bucket policy otomatis:** Setelah distribution dibuat, buka **S3 → watertrack-frontend-prod → Permissions → Bucket policy** — AWS sudah otomatis menambahkan policy berikut (tidak perlu copy-paste manual seperti UI lama):
 > ```json
@@ -818,7 +818,7 @@ Catat **Distribution ID** (`E1C3FJ11UUAQM4`) dan **Domain name** (`d56pe38f7mqzq
 >         "Resource": "arn:aws:s3:::watertrack-frontend-prod/*",
 >         "Condition": {
 >             "StringEquals": {
->                 "AWS:SourceArn": "arn:aws:cloudfront::775755739096:distribution/E1C3FJ11UUAQM4"
+>                 "AWS:SourceArn": "arn:aws:cloudfront::123456789012:distribution/EXXXXXXXXXXXXX"
 >             }
 >         }
 >     }]
@@ -898,7 +898,7 @@ Bagian ini menentukan rekomendasi rule groups yang akan ditawarkan AWS:
    - **Global:** Add CloudFront or Amplify resources ← **Pilih ini**
 2. Di dialog yang muncul, cari dan pilih distribution:
    ```
-   E1C3FJ11UUAQM4  (watertrack-frontend-prod)
+   EXXXXXXXXXXXXX  (watertrack-frontend-prod)
    ```
 3. Klik **Add**.
 
@@ -981,7 +981,7 @@ Review semua pengaturan, lalu klik **"Add protection pack (web ACL)"**.
 
 Setelah selesai, catat **Web ACL ARN** di Shared Info Sheet (format):
 ```
-WAF Web ACL ARN: arn:aws:wafv2:us-east-1:775755739096:global/webacl/watertrack-waf/____
+WAF Web ACL ARN: arn:aws:wafv2:us-east-1:123456789012:global/webacl/watertrack-waf/____
 ```
 
 > ARN bisa dilihat di halaman detail Web ACL setelah dibuat — klik nama `watertrack-waf` di daftar.
@@ -1060,8 +1060,8 @@ aws sts get-caller-identity
 # Expected:
 # {
 #   "UserId": "AIDAXXXXXXXXXXXXXXXXX",
-#   "Account": "775755739096",
-#   "Arn": "arn:aws:iam::775755739096:user/dev5-platform"
+#   "Account": "123456789012",
+#   "Arn": "arn:aws:iam::123456789012:user/dev5-platform"
 # }
 ```
 
@@ -1294,7 +1294,7 @@ Task Definition adalah "blueprint" container: image apa yang dijalankan, berapa 
    | Field di Console | Nilai | Keterangan |
    |-----------------|-------|-----------|
    | **Name** | `watertrack-api` | Harus sama persis dengan `CONTAINER_NAME: watertrack-api` di `deploy.yml`. Perbedaan satu karakter pun menyebabkan CI/CD gagal di step "Update ECS task definition". |
-   | **Image URI** | `775755739096.dkr.ecr.ap-southeast-3.amazonaws.com/watertrack-api:latest` | Salin dari Shared Info Sheet [DEV 5] + tambahkan `:latest`. Tag `latest` untuk deploy pertama; CI/CD berikutnya pakai tag SHA commit. |
+   | **Image URI** | `123456789012.dkr.ecr.ap-southeast-3.amazonaws.com/watertrack-api:latest` | Salin dari Shared Info Sheet [DEV 5] + tambahkan `:latest`. Tag `latest` untuk deploy pertama; CI/CD berikutnya pakai tag SHA commit. |
    | **Essential container** | Toggle **On** (Yes) | Jika container ini berhenti (exit code apapun), seluruh task dianggap gagal dan ECS menjalankan task pengganti. Karena ini satu-satunya container, wajib On. |
    | **Private registry authentication** | (kosong / tidak dicentang) | Hanya untuk registry non-ECR yang butuh kredensial. ECR sudah ditangani oleh execution role. |
 
@@ -1377,18 +1377,18 @@ Task Definition adalah "blueprint" container: image apa yang dijalankan, berapa 
 
    | Key | Value type | Value (ARN) |
    |-----|-----------|------------|
-   | `APP_KEY` | `ValueFrom` | `arn:aws:secretsmanager:ap-southeast-3:775755739096:secret:watertrack/app-key-mxSzGu` |
-   | `DB_PASSWORD` | `ValueFrom` | `arn:aws:secretsmanager:ap-southeast-3:775755739096:secret:watertrack/db-password-q8hwYQ` |
-   | `DB_HOST` | `ValueFrom` | `arn:aws:secretsmanager:ap-southeast-3:775755739096:secret:watertrack/db-host-4Fvid5` |
-   | `REDIS_HOST` | `ValueFrom` | `arn:aws:secretsmanager:ap-southeast-3:775755739096:secret:watertrack/redis-host-SGM4I3` |
+   | `APP_KEY` | `ValueFrom` | `arn:aws:secretsmanager:ap-southeast-3:123456789012:secret:watertrack/app-key-xxxxxx` |
+   | `DB_PASSWORD` | `ValueFrom` | `arn:aws:secretsmanager:ap-southeast-3:123456789012:secret:watertrack/db-password-xxxxxx` |
+   | `DB_HOST` | `ValueFrom` | `arn:aws:secretsmanager:ap-southeast-3:123456789012:secret:watertrack/db-host-xxxxxx` |
+   | `REDIS_HOST` | `ValueFrom` | `arn:aws:secretsmanager:ap-southeast-3:123456789012:secret:watertrack/redis-host-xxxxxx` |
 
    **Cara kerjanya:** Sebelum container start, ECS execution role (`watertrack-ecs-execution-role`) memanggil Secrets Manager API untuk mengambil nilai tiap secret, lalu menginjeksikannya sebagai environment variable ke dalam container. Nilai **tidak pernah muncul** di Console ECS, di log CloudWatch, atau di response API describe-task.
 
    Di task definition JSON, variabel `Value` masuk array `"environment"`, sedangkan `ValueFrom` masuk array `"secrets"` — keduanya tampil sebagai env var biasa di dalam container.
 
-   > **ARN suffix wajib disertakan:** Secrets Manager menambahkan 6 karakter acak di akhir setiap secret ARN (mis. `-mxSzGu`). Copy ARN persis dari Shared Info Sheet termasuk suffix. Jika suffix hilang atau salah, ECS gagal start dengan error: `ResourceNotFoundException: Secrets Manager can't find the specified secret`.
+   > **ARN suffix wajib disertakan:** Secrets Manager menambahkan 6 karakter acak di akhir setiap secret ARN (mis. `-xxxxxx`). Copy ARN persis dari Shared Info Sheet termasuk suffix. Jika suffix hilang atau salah, ECS gagal start dengan error: `ResourceNotFoundException: Secrets Manager can't find the specified secret`.
 
-   > **`REDIS_HOST`** — secret berisi hostname ElastiCache **diawali `tls://`** dan **tanpa port** (mis. `tls://clustercfg.watertrack-redis-prod.hxtqnn.apse3.cache.amazonaws.com`). Prefix `tls://` **wajib** karena ElastiCache dibuat dengan **Encryption in-transit: Enable** (langkah 7.3.8) — phpredis hanya mau koneksi TLS jika host diawali `tls://`. Tanpa prefix ini, Laravel gagal dengan `RedisException: read error on connection` saat command pertama (`SELECT`) dikirim plaintext ke server yang TLS-only. Port sudah di-set terpisah via `REDIS_PORT=6379`. Jangan masukkan hostname dengan `:6379` — port akan di-append dua kali oleh Laravel dan koneksi gagal.
+   > **`REDIS_HOST`** — secret berisi hostname ElastiCache **diawali `tls://`** dan **tanpa port** (mis. `tls://clustercfg.watertrack-redis-prod.xxxxxx.apse3.cache.amazonaws.com`). Prefix `tls://` **wajib** karena ElastiCache dibuat dengan **Encryption in-transit: Enable** (langkah 7.3.8) — phpredis hanya mau koneksi TLS jika host diawali `tls://`. Tanpa prefix ini, Laravel gagal dengan `RedisException: read error on connection` saat command pertama (`SELECT`) dikirim plaintext ke server yang TLS-only. Port sudah di-set terpisah via `REDIS_PORT=6379`. Jangan masukkan hostname dengan `:6379` — port akan di-append dua kali oleh Laravel dan koneksi gagal.
 
    > **`APP_KEY`** — nilai diawali `base64:` diikuti 44 karakter. Key ini dipakai Laravel untuk enkripsi session dan cookie. Jika key berubah setelah deploy, **semua session aktif user langsung invalid** (semua pengguna ter-logout otomatis).
 
@@ -1734,10 +1734,10 @@ jobs:
 
 | Secret Name | Value | Dari mana |
 |-------------|-------|-----------|
-| `AWS_ROLE_ARN` | `arn:aws:iam::775755739096:role/watertrack-github-actions-role` | Shared Info Sheet → [DEV 1] |
+| `AWS_ROLE_ARN` | `arn:aws:iam::123456789012:role/watertrack-github-actions-role` | Shared Info Sheet → [DEV 1] |
 | `VITE_API_BASE_URL` | `https://api.aftaza.dev/api` | Domain API + `/api` di akhir — dibaca `src/lib/api.ts` sebagai `baseURL` Axios |
 | `S3_FRONTEND_BUCKET` | `watertrack-frontend-prod` | Shared Info Sheet → [DEV 4] |
-| `CLOUDFRONT_DISTRIBUTION_ID` | `E1C3FJ11UUAQM4` | Shared Info Sheet → [DEV 4] |
+| `CLOUDFRONT_DISTRIBUTION_ID` | `EXXXXXXXXXXXXX` | Shared Info Sheet → [DEV 4] |
 
 > **Catatan `VITE_API_BASE_URL`:** Variabel ini di-inject oleh Vite **saat build** (bukan runtime) ke dalam bundle JS. Artinya nilai ini ter-bake ke dalam file `.js` di S3. Jika domain API berubah, harus rebuild dan redeploy frontend. Pastikan nilai diakhiri `/api` (tanpa trailing slash) karena `src/lib/api.ts` langsung append path seperti `/login`, `/admin/customers`, dst.
 
@@ -1923,7 +1923,7 @@ git push origin main  # Trigger GitHub Actions dengan kode sebelumnya
 - [ ] CloudWatch log group `/ecs/watertrack-api` menerima log (buka stream terbaru)
 - [ ] RDS `watertrack-db-prod`: status Available, Multi-AZ: Yes
 - [ ] ElastiCache `watertrack-redis-prod`: status Available, replica aktif
-- [ ] CloudFront `E1C3FJ11UUAQM4`: Deployed (bukan In Progress)
+- [ ] CloudFront `EXXXXXXXXXXXXX`: Deployed (bukan In Progress)
 - [ ] WAF Web ACL terhubung ke CloudFront distribution
 - [ ] Secrets Manager: 4 secret ada dan berstatus `Active`
 
@@ -1940,7 +1940,7 @@ git push origin main  # Trigger GitHub Actions dengan kode sebelumnya
 |---------|-------------------------------------------------------------|
 | ECS Cluster | `console.aws.amazon.com/ecs/v2/clusters/watertrack-cluster` |
 | ECS Service | `console.aws.amazon.com/ecs/v2/clusters/watertrack-cluster/services/watertrack-api-service` |
-| ECR Repository | `console.aws.amazon.com/ecr/repositories/private/775755739096/watertrack-api` |
+| ECR Repository | `console.aws.amazon.com/ecr/repositories/private/123456789012/watertrack-api` |
 | CloudWatch Logs | `console.aws.amazon.com/cloudwatch/home#logsV2:log-groups/log-group/$252Fecs$252Fwatertrack-api` |
 | RDS Instances | `console.aws.amazon.com/rds/home#databases:` |
 | ElastiCache | `console.aws.amazon.com/elasticache/home#/redis` |

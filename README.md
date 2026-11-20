@@ -1,418 +1,85 @@
-# Water Billing Management System
+# WaterTrack: Water Billing on AWS
 
-A comprehensive water billing management system built with Laravel (backend) and React (frontend). This system manages customer billing, payment processing, and meter readings for water utility services.
+Final project for the Cloud Architecture and Security course at Universitas Brawijaya (2026), built by a team of
+five. WaterTrack is a water billing system, a Laravel API and a React SPA, deployed to AWS in Jakarta
+(ap-southeast-3) the way a production system would be: highly available, private by default, and deployed from
+GitHub without stored AWS keys.
 
-## Project Overview
+## The app
 
-This full-stack application provides a complete solution for water billing management with role-based access control for administrators, operators, and cashiers.
+| Role | What they do |
+| --- | --- |
+| **Admin** | Users, tariffs, customers, bills, payments, dashboard, audit log |
+| **Operator** | Record meter readings (one by one or in bulk from an Excel template), generate bills, manage customer accounts |
+| **Kasir** (cashier) | Look up and pay bills, confirm payment requests from customers |
+| **Klien** (customer) | See their own bills, request payment, download a bill as PDF; must change the initial password first |
 
-### Key Features
+- Customers can be imported from CSV; subscription numbers are generated.
+- Model observers write changes to users, customers, bills and payments to an audit log.
+- Login is rate limited, and each route group is guarded by role middleware.
 
-- **Multi-role Authentication**: Admin, Operator, and Kasir (Cashier) roles
-- **Customer Management**: Complete CRUD operations with Excel import/export
-- **Bill Generation**: Automated billing based on meter readings
-- **Payment Processing**: Real-time payment handling with multiple payment methods
-- **Dashboard Analytics**: Real-time statistics and activity tracking
-- **Meter Reading**: Digital meter recording system
-- **Responsive Design**: Modern UI with Tailwind CSS and shadcn/ui
-
-## Tech Stack
-
-### Backend (Laravel)
-- **Framework**: Laravel 12.x
-- **Authentication**: Laravel Sanctum
-- **Database**: MySQL
-- **API**: RESTful API architecture
-- **PHP Version**: 8.2+
-
-### Frontend (React)
-- **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite
-- **UI Library**: shadcn/ui + Tailwind CSS
-- **State Management**: React Context + Hooks
-- **HTTP Client**: Axios
-- **Routing**: React Router v6
-- **Data Processing**: XLSX for Excel operations
-
-## System Architecture
+## AWS architecture
 
 ```
-├── backend/              # Laravel API Backend
-│   ├── app/
-│   │   ├── Http/Controllers/
-│   │   │   ├── Api/
-│   │   │   │   ├── Admin/        # Admin endpoints
-│   │   │   │   ├── AuthController.php
-│   │   │   │   └── KasirController.php
-│   │   │   └── OperatorController.php
-│   │   ├── Models/
-│   │   │   ├── User.php
-│   │   │   ├── Customer.php
-│   │   │   ├── Bill.php
-│   │   │   ├── Payment.php
-│   │   │   └── Tariff.php
-│   │   └── ...
-│   ├── database/
-│   │   ├── migrations/    # Database schema
-│   │   └── seeders/       # Sample data
-│   └── routes/api.php     # API routes
-│
-└── frontend/             # React Frontend
-    ├── src/
-    │   ├── components/    # Reusable components
-    │   ├── pages/         # Page components
-    │   │   ├── admin/     # Admin pages
-    │   │   └── kasir/     # Cashier pages
-    │   ├── contexts/      # React contexts
-    │   ├── hooks/         # Custom hooks
-    │   └── lib/           # Utilities
-    └── public/            # Static assets
+GitHub ──► GitHub Actions (OIDC) ──► ECR ──► ECS Fargate
+                    └──────────────► S3 (SPA) + CloudFront invalidation
+
+Users ─► Route 53 ─► CloudFront + WAF ─┬─► S3 (React SPA)
+                                       └─► ALB ─► ECS Fargate (nginx + php-fpm, ≥ 2 tasks, auto scaling)
+                                                     ├─► RDS MySQL Multi-AZ
+                                                     ├─► ElastiCache Redis (TLS)
+                                                     ├─► Secrets Manager
+                                                     └─► S3 (uploads)
 ```
 
-## Database Schema
+- ECS tasks, RDS and Redis live in private subnets; security groups only allow ALB → ECS → database and cache.
+- Secrets Manager holds the app key and database credentials, injected at container start by the execution role.
+  The task role reaches the uploads bucket, so the app holds no AWS keys.
+- Two ACM certificates: one in ap-southeast-3 for the ALB, one in us-east-1 for CloudFront.
+- CloudWatch logs and alarms (to SNS), X-Ray tracing, and CloudTrail.
+- Estimated cost: about $138/month for production, about $70/month for a single-task staging setup.
 
-### Core Tables
+Why ECS Fargate over EKS or plain EC2, and the rest of the decisions, are in
+[`docs/aws-architecture/watertrack-aws-architecture.md`](docs/aws-architecture/watertrack-aws-architecture.md)
+(diagram: [`.drawio`](docs/aws-architecture/watertrack-aws-architecture.drawio)).
 
-#### Users
-- Multi-role authentication system
-- Roles: admin, operator, kasir
+## CI/CD
 
-#### Customers
-- Customer information and status
-- Meter readings and tariff rates
-- Contact details and service status
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs on push to `main` and only deploys the part that
+changed:
 
-#### Bills
-- Monthly billing records
-- Meter usage calculations
-- Payment status tracking
+- **Backend:** assume an IAM role through GitHub OIDC, build the image, push it to ECR tagged with the commit SHA,
+  render a new task definition, and roll it out on ECS.
+- **Frontend:** build the SPA, sync it to S3, and invalidate CloudFront.
 
-#### Payments
-- Payment transaction records
-- Multiple payment methods
-- Cashier processing logs
+## Repository
 
-#### Tariffs
-- Water rate configurations
-- Category-based pricing
+| Path | Stack |
+| --- | --- |
+| [`backend/`](backend) | Laravel 12, PHP 8.2+, Sanctum, MySQL, Redis (phpredis); nginx + php-fpm under supervisord |
+| [`frontend/`](frontend) | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui |
+| [`docs/`](docs) | Architecture, and the step-by-step deploy guides the team followed (Indonesian) |
 
-## API Endpoints
+## Running locally
 
-### Authentication
-```
-POST /api/login          # User login
-POST /api/logout         # User logout
-GET  /api/user           # Get current user
-```
-
-### Admin Routes (`/api/admin/*`)
-```
-# Dashboard
-GET  /dashboard/stats     # Dashboard statistics
-GET  /dashboard/activities # Recent activities
-
-# Customer Management
-GET    /customers         # List customers
-POST   /customers         # Create customer
-GET    /customers/{id}    # Get customer
-PUT    /customers/{id}    # Update customer
-DELETE /customers/{id}    # Delete customer
-POST   /customers/import  # Import Excel data
-
-# Bill Management
-GET    /bills            # List bills
-POST   /bills            # Create bill
-PUT    /bills/{id}       # Update bill
-DELETE /bills/{id}       # Delete bill
-POST   /bills/generate   # Generate monthly bills
-
-# Payment Management
-GET    /payments         # List payments
-POST   /payments         # Create payment
-PUT    /payments/{id}    # Update payment
-DELETE /payments/{id}    # Delete payment
-
-# Tariff Management
-GET    /tariffs          # List tariffs
-POST   /tariffs          # Create tariff
-PUT    /tariffs/{id}     # Update tariff
-DELETE /tariffs/{id}     # Delete tariff
-```
-
-### Cashier Routes (`/api/kasir/*`)
-```
-POST /cek-tagihan        # Check customer bill
-POST /bayar              # Process payment
-```
-
-### Operator Routes (`/api/operator/*`)
-```
-POST /catat-meteran      # Record meter reading
-POST /customer-info      # Get customer info
-```
-
-## User Roles & Permissions
-
-### Admin
-- Full system access
-- Customer management
-- Bill generation and management
-- Payment oversight
-- System configuration
-- User management
-- Reports and analytics
-
-### Operator
-- Customer data management
-- Meter reading input
-- Customer information lookup
-- Excel import/export for customers
-
-### Kasir (Cashier)
-- Bill checking and lookup
-- Payment processing
-- Receipt generation
-- Payment method selection
-- Transaction history
-
-## Installation & Setup
-
-### Prerequisites
-- PHP 8.2+
-- Composer
-- Node.js 18+
-- MySQL 8.0+
-- Git
-
-### Backend Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd WaterTrack/backend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   composer install
-   ```
-
-3. **Environment configuration**
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-4. **Database configuration**
-   Update `.env` file with your database credentials:
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=water_billing
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
-
-5. **Run migrations and seeders**
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
-
-6. **Start the server**
-   ```bash
-   php artisan serve
-   ```
-
-### Frontend Setup
-
-1. **Navigate to frontend directory**
-   ```bash
-   cd ../frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Environment configuration**
-   Create `.env` file:
-   ```env
-   VITE_API_URL=http://localhost:8000/api
-   ```
-
-4. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-## Usage
-
-### Default Accounts
-After running seeders, these demo accounts are available:
-
-- **Admin**: admin@example.com
-- **Operator**: operator@example.com  
-- **Kasir**: kasir@example.com
-
-### Customer Management
-1. Login as Admin or Operator
-2. Navigate to "Kelola Pelanggan"
-3. Add customers manually or import via Excel
-4. Manage customer status and tariff rates
-
-### Bill Processing
-1. Generate monthly bills for all customers
-2. Record meter readings (Operator)
-3. System automatically calculates usage and billing
-
-### Payment Processing
-1. Login as Kasir
-2. Use "Cek Tagihan" to lookup customer bills
-3. Process payments with various methods
-4. Generate payment receipts
-
-## Features in Detail
-
-### Excel Import/Export
-- **Template Download**: Get standardized Excel template
-- **Bulk Import**: Import customer data with validation
-- **Error Handling**: Detailed error reporting for invalid data
-- **Data Validation**: Comprehensive validation rules
-
-### Real-time Dashboard
-- **Statistics**: Live billing and payment statistics
-- **Activities**: Recent system activities
-- **Role-based Views**: Customized dashboard per user role
-- **Quick Actions**: Frequently used features accessible
-
-### Payment System
-- **Multiple Methods**: Cash, transfer, card payments
-- **Receipt Generation**: Automatic receipt creation
-- **Transaction Logging**: Complete payment audit trail
-- **Status Tracking**: Real-time payment status updates
-
-### Responsive Design
-- **Mobile Friendly**: Optimized for all device sizes
-- **Modern UI**: Clean, professional interface
-- **Accessibility**: WCAG compliant design
-- **Dark/Light Mode**: Theme support (configurable)
-
-## Development
-
-### Code Structure
-
-**Backend (Laravel)**
-- Controllers follow REST conventions
-- Models use Eloquent relationships
-- Validation through Form Requests
-- API responses are standardized
-- Authentication via Sanctum tokens
-
-**Frontend (React)**
-- TypeScript for type safety
-- Component-based architecture
-- Custom hooks for state management
-- Consistent error handling
-- Responsive design patterns
-
-### API Response Format
-```json
-{
-  "data": {...},
-  "message": "Success message",
-  "status": "success"
-}
-```
-
-### Error Handling
-```json
-{
-  "message": "Error message",
-  "errors": {...},
-  "status": "error"
-}
-```
-
-## Security Features
-
-- **CORS Protection**: Configured for production
-- **CSRF Protection**: Built-in Laravel protection
-- **SQL Injection Prevention**: Eloquent ORM protection
-- **XSS Protection**: Input sanitization
-- **Authentication**: Sanctum token-based auth
-- **Authorization**: Role-based access control
-
-## Performance Optimizations
-
-- **Database Indexing**: Optimized query performance
-- **Eager Loading**: Reduced N+1 query problems
-- **API Pagination**: Efficient data loading
-- **Frontend Caching**: Component and data caching
-- **Lazy Loading**: On-demand component loading
-
-## Testing
-
-### Backend Testing
 ```bash
-cd backend
-php artisan test
+docker compose up -d --build
+docker compose exec backend php artisan migrate:fresh --seed --force
 ```
 
-### Frontend Testing
-```bash
-cd frontend
-npm run test
-```
+The SPA runs on http://localhost:3000 and the API on http://localhost:8000. The seeder creates
+`admin@watertrack.id` and `operator@watertrack.id` with the password `password` (local only).
 
-## Deployment
+Backend tests: `docker compose exec backend php artisan test`.
 
-### Production Environment
-1. Set `APP_ENV=production` in `.env`
-2. Configure production database
-3. Set up SSL certificates
-4. Configure web server (Apache/Nginx)
-5. Build frontend for production: `npm run build`
+## Deploying
 
-### AWS Deployment (ECS Fargate)
-Step-by-step AWS Console guide (RDS, ElastiCache, ECS Fargate, ALB, CloudFront, GitHub Actions CI/CD): see [`docs/deploy-guide-console.md`](docs/deploy-guide-console.md).
+- [`docs/deploy-guide-console.md`](docs/deploy-guide-console.md): AWS Console walkthrough (IAM, VPC, RDS, ElastiCache, ECS, CloudFront, WAF, CI/CD), split across five developers.
+- [`docs/deploy-guide.md`](docs/deploy-guide.md): the same setup with the AWS CLI.
 
-> **Production requires Redis** (`SESSION_DRIVER=redis`, `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`) via the `phpredis` PECL extension — already configured in `backend/Dockerfile`.
+Account IDs and resource IDs in the docs are placeholders.
 
-### Docker Deployment
-Docker configuration files are available for containerized deployment.
+## Team
 
-## Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support and questions:
-- Create an issue in this repository
-- Contact the development team
-- Check the documentation wiki
-
-## Changelog
-
-### Version 1.0.0
-- Initial release
-- Multi-role authentication system
-- Customer management with Excel import
-- Bill generation and management
-- Payment processing system
-- Real-time dashboard
-- Responsive design
-
----
-
-**Built with ❤️ for efficient water billing management**
+Forked from [johnnnic/WaterTrack](https://github.com/johnnnic/WaterTrack). My part: the AWS architecture and deploy
+guides, the GitHub Actions pipeline, and most of the backend and frontend redesign.

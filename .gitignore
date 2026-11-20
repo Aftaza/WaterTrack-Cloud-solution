@@ -1,0 +1,15 @@
+# Windows download metadata and shell crash dumps
+*Zone.Identifier
+*.stackdump
+
+# Local env files (examples are tracked)
+.env
+.env.local
+!.env.example
+
+# Exported logs
+logs/
+
+# AI assistant notes
+CLAUDE.md
+.claude/
